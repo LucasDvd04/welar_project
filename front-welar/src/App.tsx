@@ -1,6 +1,6 @@
 import './App.css'
 import ButtonShopee from './components/_button'
-import search from '../public/search-line.svg'
+
 import logo from './assets/logo.png'
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
         <div className="w-full flex justify-between items-center bg-[#bce8db] p-2">
           <div></div>
           <h1 className='text-2xl text-text-main cursor-pointer'>WeLar</h1>
-          <img src={search} alt="search" className='w-10 h-10 cursor-pointer p-2 rounded-full hover:bg-action-primary'/>
+          <img src={'/search-line.svg'} alt="search" className='w-10 h-10 cursor-pointer p-2 rounded-full hover:bg-action-primary'/>
         </div>
 
         {/* Hero */}
