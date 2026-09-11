@@ -1,5 +1,5 @@
 
-function ButtonShopee(url: any){
+function ButtonShopee(url){
     let path = ''
     if(!url.url){
         path = 'lucasdavidli'

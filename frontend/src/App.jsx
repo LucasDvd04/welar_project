@@ -1,120 +1,298 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
+import ButtonShopee from './components/_button'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+
+function limitarTexto(texto, limite = 30) {
+  if (!texto) return ''
+
+  return texto.length > limite
+    ? texto.slice(0, limite - 3) + '...'
+    : texto
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [page, setPage] = useState(1)
+  const [hasNextPage, setHasNextPage] = useState(true)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(
+          'http://127.0.0.1:8000/catalog/products/?page=' + page
+        )
+        console.log('Response:', response.data.results)
+        setProducts(response.data.results)
+        setHasNextPage(response.data.next !== null)
+
+      } catch (error) {
+        console.error('Error fetching products:', error)
+
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+
+  }, [page])
+
+  useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}, [page])
+
+  console.log(products)
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+      <div className="h-full w-full bg-page">
+
+        {/* Header */}
+        <div className="w-full flex justify-between items-center bg-[#bce8db] p-2">
+
+          <div></div>
+
+          <div className="flex items-center gap-2 cursor-pointer">
+
+            <img
+              src="/favicon.svg"
+              alt="WeLar Logo"
+              className="w-8 h-8 object-contain bg-white rounded-full p-1"
+            />
+
+            <h1 className="text-2xl text-text-main">
+              WeLar
+            </h1>
+
+          </div>
+
+          <img
+            src="/search-line.svg"
+            alt="search"
+            className="w-10 h-10 cursor-pointer p-2 rounded-full hover:bg-action-primary"
+          />
+
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+
+
+        {/* Hero */}
+        <div id="hero"
+          className='w-full mx-auto text-center px-4 py-20 bg-[url("./assets/hero.jpg")] bg-cover bg-center'
         >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+          <div className="flex flex-col gap-8 max-w-6xl mx-auto">
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+            <h1 className="text-5xl text-center text-text-main flex-wrap">
+              Transforme
+              <br />
+              sua casa
+            </h1>
+
+            <ButtonShopee />
+
+          </div>
+
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+
+        {/* Body */}
+        <div className="w-full h-full p-2">
+
+          <div
+            id="cards"
+            className="w-full flex flex-wrap justify-center gap-2 py-6"
+          >
+
+            {/* Carregando */}
+            {loading ? (
+
+              <p className="text-text-main text-xl py-10">
+                Carregando produtos...
+              </p>
+
+            ) : products.length === 0 ? (
+
+              /* Nenhum produto */
+              <p className="text-text-main text-xl py-10">
+                Nada aqui ainda
+              </p>
+
+            ) : (
+
+              /* Produtos */
+              products.map((product, index) => (
+
+                <div
+                  className="max-w-50 h-70 md:w-1/4 lg:w-1/6"
+                  key={index}
+                >
+
+                  {/* Imagem do produto */}
+                  <div
+                    className="py-18 bg-cover bg-center rounded-md"
+                    style={{
+                      backgroundImage: `url(${product.url_picture})`
+                    }}
+                  ></div>
+
+
+                  {/* Informações do produto */}
+                  <div className="flex flex-col gap-2 text-center">
+
+                    <p className="font-bold">
+                      {limitarTexto(product.name, 35)}
+                    </p>
+
+                    <div className="text-center">
+
+                      <ButtonShopee
+                        url={product.url_shopee}
+                      />
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              ))
+
+            )}
+
+          </div>
+          {/* Paginação */}
+          <div className="flex justify-center gap-4 py-6">
+
+
+            <button
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              disabled={page === 1}
+              className={`px-4 py-2 rounded-md ${page === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-action-primary hover:bg-action-hover text-white'}`}
+            >
+              Anterior
+            </button>
+
+            <span className="px-4 py-2 rounded-md bg-gray-200">
+              {page}
+            </span>
+
+            <button
+              
+              onClick={() => setPage((prev) => prev + 1)}
+              disabled={hasNextPage === false}
+              // className="px-4 py-2 rounded-md bg-action-primary hover:bg-action-hover text-white"
+              className={`px-4 py-2 rounded-md ${hasNextPage === false ? 'bg-gray-300 cursor-not-allowed' : 'bg-action-primary hover:bg-action-hover text-white'}`}
+
+            >
+              Próxima
+            </button>
+
+          </div>
+        </div>
+
+
+        {/* Footer */}
+        <footer className="w-full bg-action-primary text-white mt-16 pt-12 pb-6 px-6">
+
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-white/15">
+
+            {/* Coluna 1: Marca & Sobre */}
+            <div className="flex flex-col gap-3">
+
+              <div className="flex items-center gap-2">
+
+                <img
+                  src="/favicon.svg"
+                  alt="WeLar Logo"
+                  className="w-8 h-8 object-contain bg-white rounded-full p-1"
+                />
+
+                <span className="text-2xl font-bold tracking-wide">
+                  WeLar
+                </span>
+
+              </div>
+
+              <p className="text-sm text-slate-200 max-w-sm leading-relaxed">
+                Sua casa, seus sonhos. Curadoria exclusiva de itens
+                de decoração, organização e aconchego para o seu lar.
+              </p>
+
+            </div>
+
+
+            {/* Coluna 2: Diferenciais e Confiança */}
+            <div className="flex flex-col gap-3">
+
+              <h3 className="text-lg font-semibold text-[#bce8db]">
+                Por que WeLar?
+              </h3>
+
+              <ul className="text-sm text-slate-200 space-y-2">
+
+                <li className="flex items-center gap-2">
+                  <span>🛍️</span>
+                  Compra 100% Segura via Shopee
+                </li>
+
+                <li className="flex items-center gap-2">
+                  <span>✨</span>
+                  Curadoria Especializada de Produtos
+                </li>
+
+                <li className="flex items-center gap-2">
+                  <span>🚚</span>
+                  Aproveite os Cupons de Frete Grátis
+                </li>
+
+              </ul>
+
+            </div>
+
+
+            {/* Coluna 3: Chamada para a Shopee */}
+            <div className="flex flex-col gap-3">
+
+              <h3 className="text-lg font-semibold text-[#bce8db]">
+                Loja Oficial
+              </h3>
+
+              <p className="text-sm text-slate-200">
+                Acesse nosso catálogo completo com os melhores preços
+                direto na plataforma.
+              </p>
+
+              <div className="pt-2">
+                <ButtonShopee />
+              </div>
+
+            </div>
+
+          </div>
+
+
+          {/* Sub-footer / Copyright */}
+          <div className="max-w-6xl mx-auto pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-300 gap-3">
+
+            <p>
+              © {new Date().getFullYear()} WeLar. Todos os direitos reservados.
+            </p>
+
+            <p className="flex items-center gap-1">
+              Redirecionamento oficial para a Shopee 🧡
+            </p>
+
+          </div>
+
+        </footer>
+
+      </div>
     </>
   )
 }
