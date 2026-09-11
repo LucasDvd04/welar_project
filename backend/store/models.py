@@ -4,6 +4,7 @@ from django.db import models
 class Store(models.Model):
     id_shopee = models.CharField(max_length=100, unique=True)
     name = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
