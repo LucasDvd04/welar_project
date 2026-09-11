@@ -22,7 +22,7 @@ function App() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          'http://127.0.0.1:8000/catalog/products/?page=' + page
+          'https://welar.pythonanywhere.com/catalog/products/?page=' + page
         )
         console.log('Response:', response.data.results)
         setProducts(response.data.results)
