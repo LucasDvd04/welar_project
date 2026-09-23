@@ -129,7 +129,7 @@ function App() {
               products.map((product, index) => (
 
                 <div
-                  className="max-w-50 h-70 md:w-1/4 lg:w-1/6"
+                  className="max-w-40 min-h-70 md:w-1/4 lg:w-1/6"
                   key={index}
                 >
 
@@ -145,9 +145,11 @@ function App() {
                   {/* Informações do produto */}
                   <div className="flex flex-col gap-2 text-center">
 
-                    <p className="font-bold">
+                   <div className='h-20'>
+                     <p className="font-bold">
                       {limitarTexto(product.name, 35)}
                     </p>
+                   </div>
 
                     <div className="text-center">
 
